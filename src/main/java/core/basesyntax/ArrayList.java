@@ -9,14 +9,14 @@ public class ArrayList<T> implements List<T> {
     private static final String NO_SUCH_ELEMENT = "No such element [%h] in this list";
     private static final String ILLEGAL_CAPACITY = "Illegal capacity: %d";
     private static final int DEFAULT_CAPACITY = 10;
-    private Object[] elements;
+    private T[] elements;
     private int size;
 
     public ArrayList(int initialCapacity) {
         if (initialCapacity <= 0) {
             throw new IllegalArgumentException(String.format(ILLEGAL_CAPACITY, initialCapacity));
         }
-        this.elements = new Object[initialCapacity];
+        this.elements = (T[]) new Object[initialCapacity];
     }
 
     public ArrayList() {
@@ -31,7 +31,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void add(T value, int index) {
-        checkingIndexForMethodAdd(index);
+        checkingIndex(index, size + 1);
         growIfArrayFull();
         System.arraycopy(elements, index, elements, index + 1, size - index);
         elements[index] = value;
@@ -47,19 +47,19 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        checkingIndex(index);
+        checkingIndex(index, size);
         return (T) elements[index];
     }
 
     @Override
     public void set(T value, int index) {
-        checkingIndex(index);
+        checkingIndex(index, size);
         elements[index] = value;
     }
 
     @Override
     public T remove(int index) {
-        checkingIndex(index);
+        checkingIndex(index, size);
         T removedElement = (T) elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         size--;
@@ -86,14 +86,8 @@ public class ArrayList<T> implements List<T> {
         return size == 0;
     }
 
-    private void checkingIndex(int index) {
+    private void checkingIndex(int index, int size) {
         if (index < 0 || index >= size) {
-            throw new ArrayListIndexOutOfBoundsException(String.format(OUT_OF_BOUNDS, index, size));
-        }
-    }
-
-    private void checkingIndexForMethodAdd(int index) {
-        if (index < 0 || index > size) {
             throw new ArrayListIndexOutOfBoundsException(String.format(OUT_OF_BOUNDS, index, size));
         }
     }
